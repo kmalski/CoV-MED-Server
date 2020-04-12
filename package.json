@@ -2,9 +2,12 @@
   "name": "cov-med",
   "version": "1.0.0",
   "description": "University project",
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kmalski/CoV-MED.git"
+  },
   "scripts": {
-    "start": "node .\\server\\index.js",
+    "start": "node ./server/index.js",
     "start-dev": "nodemon ./server/index.js"
   },
   "author": "Konrad Malski, Radoslaw Leluk",
