@@ -1,4 +1,4 @@
 ﻿{
-    "connectionString": "mongodb://localhost/node-mongo-registration-login-api",
+    "connectionString": "mongodb://admin:admin123@ds151486.mlab.com:51486/heroku_d7brrfd5",
     "secret": "Very secret secret"
 }

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node ./server/index.js",
-    "start-dev": "nodemon ./server/index.js"
+    "start-dev": "nodemon .\\server\\index.js"
   },
   "author": "Konrad Malski, Radoslaw Leluk",
   "license": "ISC",
