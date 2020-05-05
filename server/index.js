@@ -14,7 +14,10 @@ app.use(jwt());
 app.use(express.static('public'));
 app.use(errorHandler);
 
-app.use('/users', require('./users/users.controller'));
+app.use('/users', require('./users/user.controller'));
+app.use('/clients', require('./users/clients/client.controller'));
+app.use('/doctors', require('./users/doctors/doctor.controller'));
+app.use('/receptionists', require('./users/receptionists/receptionist.controller'));
 
 const port = process.env.NODE_ENV === 'production' ? process.env.PORT || 80 : 4000;
 
