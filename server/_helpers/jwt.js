@@ -1,28 +1,25 @@
 const expressJwt = require('express-jwt');
+const jwtAuthz = require('express-jwt-authz');
 const userService = require('../users/user.service');
 const secret = process.env.JWT_KEY
 
-module.exports = jwt;
+module.exports = {
+  authenticate,
+  authorize,
+};
 
-function jwt() {
-  return expressJwt({ secret, isRevoked }).unless({
+function authenticate() {
+  return expressJwt({ secret }).unless({
+    // public routes that don't require authentication
     path: [
-      // public routes that don't require authentication
       '/users/authenticate',
       '/clients/register',
       '/doctors/register',
-      '/receptionists/register',
+      '/receptionists/register'
     ],
   });
 }
 
-async function isRevoked(req, payload, done) {
-  const user = await userService.getById(payload.sub);
-
-  // revoke token if user no longer exists
-  if (!user) {
-    return done(null, true);
-  }
-
-  done();
+function authorize(userTypes) {
+  return jwtAuthz(userTypes, {customScopeKey: 'userType'})
 }

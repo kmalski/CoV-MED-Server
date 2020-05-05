@@ -1,9 +1,10 @@
 ﻿const express = require('express');
 const router = express.Router();
+const jwt = require('../_helpers/jwt')
 const userService = require('./user.service');
 
 router.post('/authenticate', authenticate);
-router.get('/', getAll);
+router.get('/', jwt.authorize(['Receptionist']), getAll);
 router.get('/current', getCurrent);
 router.get('/:id', getById);
 router.put('/:id', update);

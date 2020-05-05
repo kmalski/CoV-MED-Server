@@ -10,7 +10,7 @@ const errorHandler = require('./_helpers/error-handler');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(jwt());
+app.use(jwt.authenticate());
 app.use(express.static('public'));
 app.use(errorHandler);
 
