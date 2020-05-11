@@ -8,7 +8,8 @@ router.get('/', jwt.authorize(['Receptionist']), getAll);
 router.get('/current', getCurrent);
 router.get('/:id', getById);
 router.put('/:id', update);
-router.delete('/:id', _delete);
+// router.delete('/:id', _delete);
+router.delete('/delete', deleteByCredentials);
 
 module.exports = router;
 
@@ -44,6 +45,12 @@ function update(req, res, next) {
 
 function _delete(req, res, next) {
     userService.delete(req.params.id)
+
+        .catch(err => next(err));
+}
+
+function deleteByCredentials(req, res, next) {
+    userService.deleteByCredentials(req.body)
         .then(() => res.json({}))
         .catch(err => next(err));
 }
