@@ -9,6 +9,6 @@ module.exports = router;
 function register(req, res, next) {
   receptionistService
     .create(req.body)
-    .then(() => res.json({}))
+    .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
     .catch((err) => next(err));
 }

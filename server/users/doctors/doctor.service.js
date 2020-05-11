@@ -22,4 +22,14 @@ async function create(userParam) {
 
   // save user
   await doctor.save();
+  
+  const registeredUser = await User.findOne({ username: userParam.username });
+
+  return {
+      username: registeredUser.username,
+      userType: registeredUser.userType,
+      firstName: registeredUser.firstName,
+      lastName: registeredUser.lastName,
+      token: registeredUser.token
+    };
 }

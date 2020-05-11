@@ -8,7 +8,7 @@ router.get('/', jwt.authorize(['Receptionist']), getAll);
 router.get('/current', getCurrent);
 router.get('/:id', getById);
 router.put('/:id', update);
-// router.delete('/:id', _delete);
+router.delete('/:id', _delete);
 router.delete('/delete', deleteByCredentials);
 
 module.exports = router;

@@ -60,14 +60,11 @@ async function _delete(id) {
 
 async function deleteByCredentials(userParam){
     // validate
-    console.log(userParam.username);
     if (!(await User.findOne({ username: userParam.username }))) {
       throw 'User "' + userParam.username + '" does not exist';
     }
 
     const user = await User.findOne({ username: userParam.username });
-
-    console.log("After finding" + userParam.username);
 
   if (user && bcrypt.compareSync(userParam.password, user.hash)) {
       const { hash, userType, username } = user.toObject();
