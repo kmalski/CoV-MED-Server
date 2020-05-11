@@ -10,7 +10,6 @@ module.exports = {
   getById,
   update,
   deleteByCredentials,
-  delete: _delete,
 };
 
 async function authenticate({ username, password }) {
@@ -54,22 +53,17 @@ async function update(id, userParam) {
   await user.save();
 }
 
-async function _delete(id) {
-  await User.findByIdAndRemove(id);
-}
+async function deleteByCredentials(userParam) {
+  const user = await User.findOne({ username: userParam.username });
 
-async function deleteByCredentials(userParam){
-    // validate
-    if (!(await User.findOne({ username: userParam.username }))) {
-      throw 'User "' + userParam.username + '" does not exist';
-    }
-
-    const user = await User.findOne({ username: userParam.username });
+  if (!user) {
+    throw 'User "' + userParam.username + '" does not exist';
+  }
 
   if (user && bcrypt.compareSync(userParam.password, user.hash)) {
-      const { hash, userType, username } = user.toObject();
-      const token = jwt.sign({ sub: user.id, username: userParam.username, userType: userType }, secret);
-      await User.findByIdAndRemove(user.id);
-    }
-
+    const { hash, userType, username } = user.toObject();
+    await User.findByIdAndRemove(user.id);
+  } else {
+    throw 'Invalid password';
+  }
 }

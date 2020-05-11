@@ -9,6 +9,6 @@ module.exports = router;
 function register(req, res, next) {
   doctorService
     .create(req.body)
-    .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
+    .then((user) => (user ? res.json(user) : res.status(400).json({ message: 'Could not register new user' })))
     .catch((err) => next(err));
 }

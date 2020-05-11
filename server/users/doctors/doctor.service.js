@@ -8,28 +8,17 @@ module.exports = {
 };
 
 async function create(userParam) {
-  // validate
   if (await User.findOne({ username: userParam.username })) {
     throw 'Username "' + userParam.username + '" is already taken';
   }
 
   const doctor = new Doctor(userParam);
 
-  // hash password
   if (userParam.password) {
     doctor.hash = bcrypt.hashSync(userParam.password, 10);
   }
 
-  // save user
   await doctor.save();
-  
-  const registeredUser = await User.findOne({ username: userParam.username });
 
-  return {
-      username: registeredUser.username,
-      userType: registeredUser.userType,
-      firstName: registeredUser.firstName,
-      lastName: registeredUser.lastName,
-      token: registeredUser.token
-    };
+  return await User.findOne({ username: userParam.username }).select('-hash');
 }
