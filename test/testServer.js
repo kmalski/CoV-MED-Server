@@ -8,25 +8,25 @@ chai.should();
 chai.use(chaiHttp);
 
 const clientUser = {
-  username: 'ClientTestAccount1',
-  password: 'ClientTestPassword1',
-  firstName: 'ClientTestName1',
-  lastName: 'ClientTestLastName1',
+  username: 'ClientTestAccount',
+  password: 'ClientTestPassword',
+  firstName: 'ClientTestName',
+  lastName: 'ClientTestLastName'
 };
 
 const doctorUser = {
-  username: 'ClientTestAccount2',
-  password: 'ClientTestPassword2',
-  firstName: 'ClientTestName2',
-  lastName: 'ClientTestLastName2',
+  username: 'DoctorTestAccount',
+  password: 'DoctorTestPassword',
+  firstName: 'DoctorTestName',
+  lastName: 'DoctorTestLastName'
 };
 
 
 const receptionistUser = {
-  username: 'ClientTestAccount3',
-  password: 'ClientTestPassword3',
-  firstName: 'ClientTestName3',
-  lastName: 'ClientTestLastName3',
+  username: 'ReceptionistTestAccount',
+  password: 'ReceptionistTestPassword',
+  firstName: 'ReceptionistTestName',
+  lastName: 'ReceptionistTestLastName'
 };
 
 let token = "";
