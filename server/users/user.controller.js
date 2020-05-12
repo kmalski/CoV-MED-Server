@@ -44,6 +44,6 @@ function update(req, res, next) {
 
 function deleteByCredentials(req, res, next) {
     userService.deleteByCredentials(req.body)
-        .then(unregister => unregister ? res.json(unregister) : res.status(401).json({ message: 'Could delete the user' }))
+        .then(unregister => res.json(unregister))
         .catch(err => next(err));
 }

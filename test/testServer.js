@@ -118,7 +118,6 @@ describe('Testing Cov-Med API', () => {
         .end((err, response) => {
           console.log(response.body);
           response.status.should.eq(200);
-          response.body.should.eq('User deleted');
           done();
         });
     });
@@ -208,7 +207,6 @@ describe('Testing Cov-Med API', () => {
         .end((err, response) => {
           console.log(response.body);
           response.status.should.eq(200);
-          response.body.should.eq('User deleted');
           done();
         });
     });
@@ -295,9 +293,7 @@ describe('Testing Cov-Med API', () => {
         .set('Authorization', 'bearer ' + token)
         .send({ username: receptionistUser.username, password: receptionistUser.password })
         .end((err, response) => {
-          console.log(response.body);
           response.status.should.eq(200);
-          response.body.should.eq('User deleted');
           done();
         });
     });
