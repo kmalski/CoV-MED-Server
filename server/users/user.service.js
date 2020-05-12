@@ -1,7 +1,7 @@
 ﻿const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const db = require('../_helpers/db');
-const User = db.User;
+const { User } = require('../_helpers/db');
+const { UnauthorizedError } = require('../_helpers/errors');
 const secret = process.env.JWT_KEY;
 
 module.exports = {
@@ -64,6 +64,6 @@ async function deleteByCredentials(userParam) {
     const { hash, userType, username } = user.toObject();
     await User.findByIdAndRemove(user.id);
   } else {
-    throw 'Invalid password';
+    throw new UnauthorizedError('Invalid password');
   }
 }
