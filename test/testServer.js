@@ -43,17 +43,17 @@ describe('Testing Cov-Med API', () => {
         .post('/clients/register')
         .send(clientUser)
         .end((err, response) => {
-          response.should.have.status(200);
+          id = response.body.id;
+          response.status.should.eq(200);
           response.body.should.have.property('username').eq(clientUser.username);
           response.body.should.not.have.property("password");
           response.body.should.have.property('userType').eq('Client');
           response.body.should.have.property('firstName').eq(clientUser.firstName);
           response.body.should.have.property('lastName').eq(clientUser.lastName);
           response.body.should.have.property('id').and.to.be.a('string');
-          id = response.body.id;
           done();
         });
-    });
+    }).timeout(10000);
   });
 
   describe('POST /users/authenticate', () => {
@@ -63,12 +63,12 @@ describe('Testing Cov-Med API', () => {
         .post('/users/authenticate')
         .send({ username: clientUser.username, password: clientUser.password })
         .end((err, response) => {
+          token = response.body.token;
           response.status.should.eq(200);
           response.body.should.have.property('username').eq(clientUser.username);
           response.body.should.not.have.property("password");
           response.body.should.have.property('userType').eq('Client');
           response.body.should.have.property('token').and.to.be.a('string');
-          token = response.body.token;
           done();
         });
     });
@@ -102,7 +102,7 @@ describe('Testing Cov-Med API', () => {
         .post('/clients/register')
         .send(clientUser)
         .end((err, response) => {
-          response.should.have.status(500);
+          response.status.should.eq(500);
           done();
         });
     });
@@ -133,14 +133,14 @@ describe('Testing Cov-Med API', () => {
         .post('/doctors/register')
         .send(doctorUser)
         .end((err, response) => {
-          response.should.have.status(200);
+          id = response.body.id;
+          response.status.should.eq(200);
           response.body.should.have.property('username').eq(doctorUser.username);
           response.body.should.not.have.property("password");
           response.body.should.have.property('userType').eq('Doctor');
           response.body.should.have.property('firstName').eq(doctorUser.firstName);
           response.body.should.have.property('lastName').eq(doctorUser.lastName);
           response.body.should.have.property('id').and.to.be.a('string');
-          id = response.body.id;
           done();
         });
     });
@@ -153,12 +153,12 @@ describe('Testing Cov-Med API', () => {
         .post('/users/authenticate')
         .send({ username: doctorUser.username, password: doctorUser.password })
         .end((err, response) => {
+          token = response.body.token;
           response.status.should.eq(200);
           response.body.should.have.property('username').eq(doctorUser.username);
           response.body.should.not.have.property("password");
           response.body.should.have.property('userType').eq('Doctor');
           response.body.should.have.property('token').and.to.be.a('string');
-          token = response.body.token;
           done();
         });
     });
@@ -189,10 +189,10 @@ describe('Testing Cov-Med API', () => {
     it('(Doctor) It should not register an user', (done) => {
       chai
         .request(server)
-        .post('/clients/register')
+        .post('/doctors/register')
         .send(doctorUser)
         .end((err, response) => {
-          response.should.have.status(500);
+          response.status.should.eq(500);
           done();
         });
     });
@@ -222,14 +222,14 @@ describe('Testing Cov-Med API', () => {
         .post('/receptionists/register')
         .send(receptionistUser)
         .end((err, response) => {
-          response.should.have.status(200);
+          id = response.body.id;
+          response.status.should.eq(200);
           response.body.should.have.property('username').eq(receptionistUser.username);
           response.body.should.not.have.property("password");
           response.body.should.have.property('userType').eq('Receptionist');
           response.body.should.have.property('firstName').eq(receptionistUser.firstName);
           response.body.should.have.property('lastName').eq(receptionistUser.lastName);
           response.body.should.have.property('id').and.to.be.a('string');
-          id = response.body.id;
           done();
         });
     });
@@ -242,12 +242,12 @@ describe('Testing Cov-Med API', () => {
         .post('/users/authenticate')
         .send({ username: receptionistUser.username, password: receptionistUser.password })
         .end((err, response) => {
+          token = response.body.token;
           response.status.should.eq(200);
           response.body.should.have.property('username').eq(receptionistUser.username);
           response.body.should.not.have.property("password");
           response.body.should.have.property('userType').eq('Receptionist');
           response.body.should.have.property('token').and.to.be.a('string');
-          token = response.body.token;
           done();
         });
     });
@@ -278,10 +278,10 @@ describe('Testing Cov-Med API', () => {
     it('(Receptionist) It should not register an user', (done) => {
       chai
         .request(server)
-        .post('/clients/register')
+        .post('/receptionists/register')
         .send(receptionistUser)
         .end((err, response) => {
-          response.should.have.status(500);
+          response.status.should.eq(500);
           done();
         });
     });
