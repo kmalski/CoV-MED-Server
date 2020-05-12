@@ -6,40 +6,301 @@ let server = require('../server/index');
 chai.should();
 
 chai.use(chaiHttp);
-const user1 = {
+
+const clientUser = {
   username: 'ClientTestAccount1',
   password: 'ClientTestPassword1',
   firstName: 'ClientTestName1',
   lastName: 'ClientTestLastName1',
 };
 
+const doctorUser = {
+  username: 'ClientTestAccount2',
+  password: 'ClientTestPassword2',
+  firstName: 'ClientTestName2',
+  lastName: 'ClientTestLastName2',
+};
+
+
+const receptionistUser = {
+  username: 'ClientTestAccount3',
+  password: 'ClientTestPassword3',
+  firstName: 'ClientTestName3',
+  lastName: 'ClientTestLastName3',
+};
+
+let token = "";
+let id = "";
+
 describe('Testing Cov-Med API', () => {
+
+//Testing client user
   describe('POST /clients/register', () => {
-    it('It should register an user', (done) => {
-      console.log(user1);
+    it('(Client) It should register an user', (done) => {
+      console.log(clientUser);
       chai
         .request(server)
         .post('/clients/register')
-        .send(user1)
+        .send(clientUser)
         .end((err, response) => {
           response.should.have.status(200);
+          response.body.should.have.property('username').eq(clientUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Client');
+          response.body.should.have.property('firstName').eq(clientUser.firstName);
+          response.body.should.have.property('lastName').eq(clientUser.lastName);
+          response.body.should.have.property('id').and.to.be.a('string');
+          id = response.body.id;
           done();
         });
     });
   });
 
   describe('POST /users/authenticate', () => {
-    it('It should find the user', (done) => {
+    it('(Client) It should find the user', (done) => {
       chai
         .request(server)
         .post('/users/authenticate')
-        .send({ username: user1.username, password: user1.password })
+        .send({ username: clientUser.username, password: clientUser.password })
         .end((err, response) => {
-          response.body.should.have.property('username').eq(user1.username);
+          response.status.should.eq(200);
+          response.body.should.have.property('username').eq(clientUser.username);
+          response.body.should.not.have.property("password");
           response.body.should.have.property('userType').eq('Client');
           response.body.should.have.property('token').and.to.be.a('string');
+          token = response.body.token;
           done();
         });
     });
   });
+
+
+  describe('POST /users/:id', () => {
+    it('(Client) It should find the user by id ', (done) => {
+      chai
+        .request(server)
+        .get('/users/' + id)
+        .set('Authorization', 'bearer ' + token)
+        .send({ username: clientUser.username, password: clientUser.password })
+        .end((err, response) => {
+          response.status.should.eq(200);
+          response.body.should.have.property('username').eq(clientUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Client');
+          response.body.should.have.property('firstName').eq(clientUser.firstName);
+          response.body.should.have.property('lastName').eq(clientUser.lastName);
+          response.body.should.have.property('id').and.to.be.a('string').and.to.be.eq(id);
+          done();
+        });
+    });
+  });
+
+  describe('POST /clients/register', () => {
+    it('(Client) It should not register an user', (done) => {
+      chai
+        .request(server)
+        .post('/clients/register')
+        .send(clientUser)
+        .end((err, response) => {
+          response.should.have.status(500);
+          done();
+        });
+    });
+  });
+
+  describe('POST /users/delete', () => {
+    it('(Client) It should delete the user', (done) => {
+      chai
+        .request(server)
+        .delete('/users/delete')
+        .set('Authorization', 'bearer ' + token)
+        .send({ username: clientUser.username, password: clientUser.password })
+        .end((err, response) => {
+          console.log(response.body);
+          response.status.should.eq(200);
+          response.body.should.eq('User deleted');
+          done();
+        });
+    });
+  });
+
+
+//Testing doctor user
+  describe('POST /doctors/register', () => {
+    it('(Doctor) It should register an user', (done) => {
+      chai
+        .request(server)
+        .post('/doctors/register')
+        .send(doctorUser)
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.body.should.have.property('username').eq(doctorUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Doctor');
+          response.body.should.have.property('firstName').eq(doctorUser.firstName);
+          response.body.should.have.property('lastName').eq(doctorUser.lastName);
+          response.body.should.have.property('id').and.to.be.a('string');
+          id = response.body.id;
+          done();
+        });
+    });
+  });
+
+  describe('POST /users/authenticate', () => {
+    it('(Doctor) It should find the user', (done) => {
+      chai
+        .request(server)
+        .post('/users/authenticate')
+        .send({ username: doctorUser.username, password: doctorUser.password })
+        .end((err, response) => {
+          response.status.should.eq(200);
+          response.body.should.have.property('username').eq(doctorUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Doctor');
+          response.body.should.have.property('token').and.to.be.a('string');
+          token = response.body.token;
+          done();
+        });
+    });
+  });
+
+
+  describe('POST /users/:id', () => {
+    it('(Doctor) It should find the user by id ', (done) => {
+      chai
+        .request(server)
+        .get('/users/' + id)
+        .set('Authorization', 'bearer ' + token)
+        .send({ username: doctorUser.username, password: doctorUser.password })
+        .end((err, response) => {
+          response.status.should.eq(200);
+          response.body.should.have.property('username').eq(doctorUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Doctor');
+          response.body.should.have.property('firstName').eq(doctorUser.firstName);
+          response.body.should.have.property('lastName').eq(doctorUser.lastName);
+          response.body.should.have.property('id').and.to.be.a('string').and.to.be.eq(id);
+          done();
+        });
+    });
+  });
+
+  describe('POST /doctors/register', () => {
+    it('(Doctor) It should not register an user', (done) => {
+      chai
+        .request(server)
+        .post('/clients/register')
+        .send(doctorUser)
+        .end((err, response) => {
+          response.should.have.status(500);
+          done();
+        });
+    });
+  });
+
+  describe('POST /users/delete', () => {
+    it('(Doctor) It should delete the user', (done) => {
+      chai
+        .request(server)
+        .delete('/users/delete')
+        .set('Authorization', 'bearer ' + token)
+        .send({ username: doctorUser.username, password: doctorUser.password })
+        .end((err, response) => {
+          console.log(response.body);
+          response.status.should.eq(200);
+          response.body.should.eq('User deleted');
+          done();
+        });
+    });
+  });
+
+//Testing receptionists user
+  describe('POST /receptionists/register', () => {
+    it('(Receptionist) It should register an user', (done) => {
+      chai
+        .request(server)
+        .post('/receptionists/register')
+        .send(receptionistUser)
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.body.should.have.property('username').eq(receptionistUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Receptionist');
+          response.body.should.have.property('firstName').eq(receptionistUser.firstName);
+          response.body.should.have.property('lastName').eq(receptionistUser.lastName);
+          response.body.should.have.property('id').and.to.be.a('string');
+          id = response.body.id;
+          done();
+        });
+    });
+  });
+
+  describe('POST /users/authenticate', () => {
+    it('(Receptionist) It should find the user', (done) => {
+      chai
+        .request(server)
+        .post('/users/authenticate')
+        .send({ username: receptionistUser.username, password: receptionistUser.password })
+        .end((err, response) => {
+          response.status.should.eq(200);
+          response.body.should.have.property('username').eq(receptionistUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Receptionist');
+          response.body.should.have.property('token').and.to.be.a('string');
+          token = response.body.token;
+          done();
+        });
+    });
+  });
+
+
+  describe('POST /users/:id', () => {
+    it('(Receptionist) It should find the user by id ', (done) => {
+      chai
+        .request(server)
+        .get('/users/' + id)
+        .set('Authorization', 'bearer ' + token)
+        .send({ username: receptionistUser.username, password: receptionistUser.password })
+        .end((err, response) => {
+          response.status.should.eq(200);
+          response.body.should.have.property('username').eq(receptionistUser.username);
+          response.body.should.not.have.property("password");
+          response.body.should.have.property('userType').eq('Receptionist');
+          response.body.should.have.property('firstName').eq(receptionistUser.firstName);
+          response.body.should.have.property('lastName').eq(receptionistUser.lastName);
+          response.body.should.have.property('id').and.to.be.a('string').and.to.be.eq(id);
+          done();
+        });
+    });
+  });
+
+  describe('POST /receptionists/register', () => {
+    it('(Receptionist) It should not register an user', (done) => {
+      chai
+        .request(server)
+        .post('/clients/register')
+        .send(receptionistUser)
+        .end((err, response) => {
+          response.should.have.status(500);
+          done();
+        });
+    });
+  });
+
+  describe('POST /users/delete', () => {
+    it('(Receptionist) It should delete the user', (done) => {
+      chai
+        .request(server)
+        .delete('/users/delete')
+        .set('Authorization', 'bearer ' + token)
+        .send({ username: receptionistUser.username, password: receptionistUser.password })
+        .end((err, response) => {
+          console.log(response.body);
+          response.status.should.eq(200);
+          response.body.should.eq('User deleted');
+          done();
+        });
+    });
+  });
+
 });

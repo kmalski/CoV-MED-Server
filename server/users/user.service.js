@@ -66,4 +66,5 @@ async function deleteByCredentials(userParam) {
   } else {
     throw 'Invalid password';
   }
+  return "User deleted";
 }
