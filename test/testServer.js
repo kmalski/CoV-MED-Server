@@ -8,24 +8,29 @@ chai.should();
 chai.use(chaiHttp);
 
 const clientUser = {
-  username: 'ClientTestAccount',
+  email: 'ClientTestAccount@mail.com',
   password: 'ClientTestPassword',
   firstName: 'ClientTestName',
   lastName: 'ClientTestLastName',
+  phoneNumber: '123456789',
+  pesel: '12345678999',
 };
 
 const doctorUser = {
-  username: 'DoctorTestAccount',
+  email: 'DoctorTestAccount@mail.com',
   password: 'DoctorTestPassword',
   firstName: 'DoctorTestName',
   lastName: 'DoctorTestLastName',
+  phoneNumber: '123456789',
+  specialization: 'dermatologist',
 };
 
 const receptionistUser = {
-  username: 'ReceptionistTestAccount',
+  email: 'ReceptionistTestAccount@mail.com',
   password: 'ReceptionistTestPassword',
   firstName: 'ReceptionistTestName',
   lastName: 'ReceptionistTestLastName',
+  phoneNumber: '123456789',
 };
 
 let token = '';
@@ -42,7 +47,7 @@ describe('Testing Cov-Med API', () => {
         .end((err, response) => {
           id = response.body.id;
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(clientUser.username);
+          response.body.should.have.property('email').eq(clientUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Client');
           response.body.should.have.property('firstName').eq(clientUser.firstName);
@@ -58,11 +63,11 @@ describe('Testing Cov-Med API', () => {
       chai
         .request(server)
         .post('/users/authenticate')
-        .send({ username: clientUser.username, password: clientUser.password })
+        .send({ email: clientUser.email, password: clientUser.password })
         .end((err, response) => {
           token = response.body.token;
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(clientUser.username);
+          response.body.should.have.property('email').eq(clientUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Client');
           response.body.should.have.property('token').and.to.be.a('string');
@@ -77,10 +82,10 @@ describe('Testing Cov-Med API', () => {
         .request(server)
         .get('/users/' + id)
         .set('Authorization', 'bearer ' + token)
-        .send({ username: clientUser.username, password: clientUser.password })
+        .send({ email: clientUser.email, password: clientUser.password })
         .end((err, response) => {
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(clientUser.username);
+          response.body.should.have.property('email').eq(clientUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Client');
           response.body.should.have.property('firstName').eq(clientUser.firstName);
@@ -110,7 +115,7 @@ describe('Testing Cov-Med API', () => {
         .request(server)
         .delete('/users/delete')
         .set('Authorization', 'bearer ' + token)
-        .send({ username: clientUser.username, password: clientUser.password })
+        .send({ email: clientUser.email, password: clientUser.password })
         .end((err, response) => {
           response.status.should.eq(200);
           done();
@@ -128,7 +133,7 @@ describe('Testing Cov-Med API', () => {
         .end((err, response) => {
           id = response.body.id;
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(doctorUser.username);
+          response.body.should.have.property('email').eq(doctorUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Doctor');
           response.body.should.have.property('firstName').eq(doctorUser.firstName);
@@ -144,11 +149,11 @@ describe('Testing Cov-Med API', () => {
       chai
         .request(server)
         .post('/users/authenticate')
-        .send({ username: doctorUser.username, password: doctorUser.password })
+        .send({ email: doctorUser.email, password: doctorUser.password })
         .end((err, response) => {
           token = response.body.token;
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(doctorUser.username);
+          response.body.should.have.property('email').eq(doctorUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Doctor');
           response.body.should.have.property('token').and.to.be.a('string');
@@ -163,10 +168,10 @@ describe('Testing Cov-Med API', () => {
         .request(server)
         .get('/users/' + id)
         .set('Authorization', 'bearer ' + token)
-        .send({ username: doctorUser.username, password: doctorUser.password })
+        .send({ email: doctorUser.email, password: doctorUser.password })
         .end((err, response) => {
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(doctorUser.username);
+          response.body.should.have.property('email').eq(doctorUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Doctor');
           response.body.should.have.property('firstName').eq(doctorUser.firstName);
@@ -196,7 +201,7 @@ describe('Testing Cov-Med API', () => {
         .request(server)
         .delete('/users/delete')
         .set('Authorization', 'bearer ' + token)
-        .send({ username: doctorUser.username, password: doctorUser.password })
+        .send({ email: doctorUser.email, password: doctorUser.password })
         .end((err, response) => {
           response.status.should.eq(200);
           done();
@@ -214,7 +219,7 @@ describe('Testing Cov-Med API', () => {
         .end((err, response) => {
           id = response.body.id;
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(receptionistUser.username);
+          response.body.should.have.property('email').eq(receptionistUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Receptionist');
           response.body.should.have.property('firstName').eq(receptionistUser.firstName);
@@ -230,11 +235,11 @@ describe('Testing Cov-Med API', () => {
       chai
         .request(server)
         .post('/users/authenticate')
-        .send({ username: receptionistUser.username, password: receptionistUser.password })
+        .send({ email: receptionistUser.email, password: receptionistUser.password })
         .end((err, response) => {
           token = response.body.token;
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(receptionistUser.username);
+          response.body.should.have.property('email').eq(receptionistUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Receptionist');
           response.body.should.have.property('token').and.to.be.a('string');
@@ -249,10 +254,10 @@ describe('Testing Cov-Med API', () => {
         .request(server)
         .get('/users/' + id)
         .set('Authorization', 'bearer ' + token)
-        .send({ username: receptionistUser.username, password: receptionistUser.password })
+        .send({ email: receptionistUser.email, password: receptionistUser.password })
         .end((err, response) => {
           response.status.should.eq(200);
-          response.body.should.have.property('username').eq(receptionistUser.username);
+          response.body.should.have.property('email').eq(receptionistUser.email);
           response.body.should.not.have.property('password');
           response.body.should.have.property('userType').eq('Receptionist');
           response.body.should.have.property('firstName').eq(receptionistUser.firstName);
@@ -282,7 +287,7 @@ describe('Testing Cov-Med API', () => {
         .request(server)
         .delete('/users/delete')
         .set('Authorization', 'bearer ' + token)
-        .send({ username: receptionistUser.username, password: receptionistUser.password })
+        .send({ email: receptionistUser.email, password: receptionistUser.password })
         .end((err, response) => {
           response.status.should.eq(200);
           done();

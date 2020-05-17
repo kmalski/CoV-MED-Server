@@ -12,13 +12,13 @@ module.exports = {
   deleteByCredentials,
 };
 
-async function authenticate({ username, password }) {
-  const user = await User.findOne({ username });
+async function authenticate({ email, password }) {
+  const user = await User.findOne({ email });
   if (user && bcrypt.compareSync(password, user.hash)) {
-    const { hash, userType, username } = user.toObject();
-    const token = jwt.sign({ sub: user.id, username: username, userType: userType }, secret);
+    const { hash, userType, email } = user.toObject();
+    const token = jwt.sign({ sub: user.id, email: email, userType: userType }, secret);
     return {
-      username,
+      email,
       userType,
       token,
     };
@@ -38,8 +38,8 @@ async function update(id, userParam) {
 
   // validate
   if (!user) throw 'User not found';
-  if (user.username !== userParam.username && (await User.findOne({ username: userParam.username }))) {
-    throw 'Username "' + userParam.username + '" is already taken';
+  if (user.email !== userParam.email && (await User.findOne({ email: userParam.email }))) {
+    throw 'email "' + userParam.email + '" is already taken';
   }
 
   // hash password if it was entered
@@ -54,14 +54,14 @@ async function update(id, userParam) {
 }
 
 async function deleteByCredentials(userParam) {
-  const user = await User.findOne({ username: userParam.username });
+  const user = await User.findOne({ email: userParam.email });
 
   if (!user) {
-    throw 'User "' + userParam.username + '" does not exist';
+    throw 'User "' + userParam.email + '" does not exist';
   }
 
   if (user && bcrypt.compareSync(userParam.password, user.hash)) {
-    const { hash, userType, username } = user.toObject();
+    const { hash, userType, email } = user.toObject();
     await User.findByIdAndRemove(user.id);
   } else {
     throw new UnauthorizedError('Invalid password');

@@ -8,8 +8,8 @@ module.exports = {
 };
 
 async function create(userParam) {
-  if (await User.findOne({ username: userParam.username })) {
-    throw 'Username "' + userParam.username + '" is already taken';
+  if (await User.findOne({ email: userParam.email })) {
+    throw 'User with email ' + userParam.email + ' already exists';
   }
 
   const receptionist = new Receptionist(userParam);
@@ -20,5 +20,5 @@ async function create(userParam) {
 
   await receptionist.save();
 
-  return await User.findOne({ username: userParam.username }).select('-hash');
+  return await User.findOne({ email: userParam.email }).select('-hash');
 }

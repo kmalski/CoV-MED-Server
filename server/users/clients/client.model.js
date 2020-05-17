@@ -9,6 +9,7 @@ const visitSchema = new Schema({
 const clientSchema = User.discriminator(
   'Client',
   new Schema({
+    pesel: { type: String, required: true },
     visits: [visitSchema],
   })
 );
