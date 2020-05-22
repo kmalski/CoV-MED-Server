@@ -1,10 +1,9 @@
 const bcrypt = require('bcryptjs');
-const db = require('../../_helpers/db');
-const Client = db.Client;
-const User = db.User;
+const { Client, Doctor, Clinic, User } = require('../../_helpers/db');
 
 module.exports = {
   create,
+  makeVisit,
   activate,
   deactivate,
 };
@@ -23,6 +22,15 @@ async function create(userParam) {
   await client.save();
 
   return await User.findOne({ email: userParam.email }).select('-hash');
+}
+
+async function makeVisit(param, clientId) {
+  const doctorId = await Doctor.findOne({ email: param.doctor.email }).select('id');
+  const clinicId = await Clinic.findOne({ city: param.clinic.city, street: param.clinic.street }).select('id');
+  const clinet = await Client.findById(clientId);
+
+  clinet.visits.push({ date: param.date, doctor: doctorId, clinic: clinicId });
+  await clinet.save();
 }
 
 async function activate(email) {

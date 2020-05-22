@@ -8,6 +8,7 @@ router.get('/cities', getCities);
 router.get('/city/streets', getStreets);
 router.get('/city/street/services', getServices);
 router.get('/city/street/service/doctors', getDoctors);
+router.get('/city/street/service/doctor/not-available-hours', getNotAvailableHours);
 router.get('/:id', getById);
 
 router.post('/', jwt.authorize(['Receptionist']), create);
@@ -85,5 +86,12 @@ function deleteByCityStreet(req, res, next) {
   clinicService
     .deleteByCityStreet(req.body)
     .then(() => res.json({}))
+    .catch((err) => next(err));
+}
+
+function getNotAvailableHours(req, res, next) {
+  clinicService
+    .getNotAvailableHours(req.body)
+    .then((hours) => res.json(hours))
     .catch((err) => next(err));
 }

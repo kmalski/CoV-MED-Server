@@ -1,4 +1,4 @@
-const { Clinic, Doctor } = require('../_helpers/db');
+const { Clinic, Doctor, Client } = require('../_helpers/db');
 
 module.exports = {
   getAll,
@@ -7,9 +7,11 @@ module.exports = {
   getStreets,
   getServices,
   getDoctors,
+  getNotAvailableHours,
   create,
   addService,
   addDoctor,
+  deleteByCityStreet,
 };
 
 async function getAll() {
@@ -18,6 +20,10 @@ async function getAll() {
 
 async function getById(id) {
   return await Clinic.findById(id);
+}
+
+async function getByCityStreet(city, street) {
+  return await Clinic.findOne({ city: clinicParam.city, street: clinicParam.street });
 }
 
 async function getCities() {
@@ -29,13 +35,13 @@ async function getStreets(city) {
 }
 
 async function getServices(clinicParam) {
-  clinic = await Clinic.findOne({ city: clinicParam.city, street: clinicParam.street }).select('medicalServices');
+  const clinic = await Clinic.findOne({ city: clinicParam.city, street: clinicParam.street }).select('medicalServices');
 
   return clinic.medicalServices;
 }
 
 async function getDoctors(clinicParam) {
-  clinic = await Clinic.findOne({
+  const clinic = await Clinic.findOne({
     city: clinicParam.city,
     street: clinicParam.street,
     'medicalServices.name': clinicParam.service,
@@ -56,7 +62,7 @@ async function create(clinicParam) {
 }
 
 async function addService(param) {
-  clinic = await Clinic.findOne({ city: param.city, street: param.street });
+  const clinic = await Clinic.findOne({ city: param.city, street: param.street });
 
   if (!clinic) throw 'Clinic not found';
 
@@ -65,15 +71,15 @@ async function addService(param) {
 }
 
 async function addDoctor(param) {
-  clinic = await Clinic.findOne({ city: param.city, street: param.street });
+  const clinic = await Clinic.findOne({ city: param.city, street: param.street });
   if (!clinic) throw 'Clinic not found';
 
-  medicalService = clinic.medicalServices.filter((service) => {
+  const medicalService = clinic.medicalServices.find((service) => {
     return service.name == param.service;
-  })[0];
+  });
   if (!medicalService) throw 'Medical service not found in this Clinic';
 
-  doctor = await Doctor.findOne({ email: param.email });
+  const doctor = await Doctor.findOne({ email: param.email });
   medicalService.doctors.push(doctor._id);
 
   await clinic.save();
@@ -85,4 +91,21 @@ async function deleteByCityStreet(param) {
   if (!clinic) throw 'Clinic does not exist';
 
   await Clinic.findOneAndRemove({ city: param.city, street: param.street });
+}
+
+async function getNotAvailableHours(param) {
+  const doctor = await Doctor.findOne({ email: param.doctor.email });
+  const clinic = await Clinic.findOne({ city: param.clinic.city, street: param.clinic.street });
+  const clients = await Client.find({ 'visits.doctor': doctor._id, 'visits.clinic': clinic._id }).select('visits');
+
+  const dates = clients
+    .map((client) => {
+      return client.visits.filter((visit) => {
+        return visit.date.toDateString() == new Date(param.date).toDateString();
+      });
+    })
+    .flat()
+    .map((visit) => visit.date.toTimeString());
+
+  return dates;
 }
