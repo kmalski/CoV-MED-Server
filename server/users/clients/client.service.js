@@ -5,6 +5,8 @@ const User = db.User;
 
 module.exports = {
   create,
+  activate,
+  deactivate,
 };
 
 async function create(userParam) {
@@ -21,4 +23,22 @@ async function create(userParam) {
   await client.save();
 
   return await User.findOne({ email: userParam.email }).select('-hash');
+}
+
+async function activate(email) {
+  const client = await Client.findOne({ email: email });
+
+  if (!client) throw 'User not found';
+
+  client.active = true;
+  client.save();
+}
+
+async function deactivate(email) {
+  const client = await Client.findOne({ email: email });
+
+  if (!client) throw 'User not found';
+
+  client.active = false;
+  client.save();
 }

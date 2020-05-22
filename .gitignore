@@ -40,3 +40,6 @@ typings
 # Private config
 server/config.json
 .env
+
+# Visual Studio Code
+.vscode/

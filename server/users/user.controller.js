@@ -3,11 +3,14 @@ const router = express.Router();
 const jwt = require('../_helpers/jwt');
 const userService = require('./user.service');
 
-router.post('/authenticate', authenticate);
 router.get('/', jwt.authorize(['Receptionist']), getAll);
-router.get('/current', getCurrent);
 router.get('/:id', getById);
+router.get('/current', getCurrent);
+
+router.post('/authenticate', authenticate);
+
 router.put('/:id', update);
+
 router.delete('/delete', deleteByCredentials);
 
 module.exports = router;
@@ -15,7 +18,7 @@ module.exports = router;
 function authenticate(req, res, next) {
   userService
     .authenticate(req.body)
-    .then((user) => (user ? res.json(user) : res.status(400).json({ message: 'email or password is incorrect' })))
+    .then((user) => (user ? res.json(user) : res.status(400).json({ message: 'Email or password is incorrect' })))
     .catch((err) => next(err));
 }
 
