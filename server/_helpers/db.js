@@ -9,4 +9,5 @@ module.exports = {
   Client: require('../users/clients/client.model'),
   Doctor: require('../users/doctors/doctor.model'),
   Receptionist: require('../users/receptionists/receptionist.model'),
+  Clinic: require('../clinics/clinic.model'),
 };
