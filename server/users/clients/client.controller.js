@@ -6,6 +6,8 @@ const clientService = require('./client.service');
 router.post('/register', register);
 router.post('/make-visit', makeVisit);
 
+router.get('/visits', getVisits);
+
 router.put('/activate/:email', jwt.authorize(['Receptionist']), activate);
 router.put('/deactivate/:email', jwt.authorize(['Receptionist']), deactivate);
 
@@ -22,6 +24,13 @@ function makeVisit(req, res, next) {
   clientService
     .makeVisit(req.body, req.user.sub)
     .then(() => res.json())
+    .catch((err) => next(err));
+}
+
+function getVisits(req, res, next) {
+  clientService
+    .getVisits(req.body, req.user.sub)
+    .then((visits) => res.json(visits))
     .catch((err) => next(err));
 }
 

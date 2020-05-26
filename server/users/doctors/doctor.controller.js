@@ -3,6 +3,7 @@ const router = express.Router();
 const doctorService = require('./doctor.service');
 
 router.post('/register', register);
+router.get('/', getAll);
 
 module.exports = router;
 
@@ -10,5 +11,12 @@ function register(req, res, next) {
   doctorService
     .create(req.body)
     .then((user) => (user ? res.json(user) : res.status(400).json({ message: 'Could not register new user' })))
+    .catch((err) => next(err));
+}
+
+function getAll(req, res, next) {
+  doctorService
+    .getAll()
+    .then((doctors) => res.json(doctors))
     .catch((err) => next(err));
 }

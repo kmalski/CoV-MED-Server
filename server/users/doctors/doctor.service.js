@@ -5,6 +5,7 @@ const User = db.User;
 
 module.exports = {
   create,
+  getAll,
 };
 
 async function create(userParam) {
@@ -21,4 +22,8 @@ async function create(userParam) {
   await doctor.save();
 
   return await User.findOne({ email: userParam.email }).select('-hash');
+}
+
+async function getAll() {
+  return await Doctor.find().select('-hash');
 }

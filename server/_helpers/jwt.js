@@ -15,7 +15,8 @@ function authenticate() {
       '/users/authenticate',
       '/clients/register',
       '/doctors/register',
-      '/receptionists/register'
+      '/receptionists/register',
+      '/doctors'
     ],
   });
 }

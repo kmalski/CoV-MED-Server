@@ -4,6 +4,7 @@ const { Client, Doctor, Clinic, User } = require('../../_helpers/db');
 module.exports = {
   create,
   makeVisit,
+  getVisits,
   activate,
   deactivate,
 };
@@ -27,10 +28,21 @@ async function create(userParam) {
 async function makeVisit(param, clientId) {
   const doctorId = await Doctor.findOne({ email: param.doctor.email }).select('id');
   const clinicId = await Clinic.findOne({ city: param.clinic.city, street: param.clinic.street }).select('id');
-  const clinet = await Client.findById(clientId);
+  const client = await Client.findById(clientId);
 
-  clinet.visits.push({ date: param.date, doctor: doctorId, clinic: clinicId });
-  await clinet.save();
+  client.visits.push({ date: param.date, doctor: doctorId, clinic: clinicId });
+  await client.save();
+}
+
+async function getVisits(param, clientId) {
+  const client = await Client.findById(clientId).populate('visits.doctor', '-hash -createdDate').select('-visits.clinic');
+  const toDate = new Date(param.toDate);
+
+  visits = client.visits.filter((visit) => {
+    return visit.date < toDate;
+  });
+  console.log(visits);
+  return visits;
 }
 
 async function activate(email) {
