@@ -44,6 +44,6 @@ function getById(req, res, next) {
 function deleteByCredentials(req, res, next) {
   userService
     .deleteByCredentials(req.body)
-    .then(() => res.json({}))
+    .then(() => res.json())
     .catch((err) => next(err));
 }

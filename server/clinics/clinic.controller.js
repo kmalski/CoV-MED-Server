@@ -64,28 +64,28 @@ function getDoctors(req, res, next) {
 function create(req, res, next) {
   clinicService
     .create(req.body)
-    .then(() => res.json({}))
+    .then(() => res.json())
     .catch((err) => next(err));
 }
 
 function addService(req, res, next) {
   clinicService
     .addService(req.body)
-    .then(() => res.json({}))
+    .then(() => res.json())
     .catch((err) => next(err));
 }
 
 function addDoctor(req, res, next) {
   clinicService
     .addDoctor(req.body)
-    .then(() => res.json({}))
+    .then(() => res.json())
     .catch((err) => next(err));
 }
 
 function deleteByCityStreet(req, res, next) {
   clinicService
     .deleteByCityStreet(req.body)
-    .then(() => res.json({}))
+    .then(() => res.json())
     .catch((err) => next(err));
 }
 
