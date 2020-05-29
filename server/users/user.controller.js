@@ -9,8 +9,6 @@ router.get('/current', getCurrent);
 
 router.post('/authenticate', authenticate);
 
-router.put('/:id', update);
-
 router.delete('/delete', deleteByCredentials);
 
 module.exports = router;
@@ -40,13 +38,6 @@ function getById(req, res, next) {
   userService
     .getById(req.params.id)
     .then((user) => (user ? res.json(user) : res.sendStatus(404)))
-    .catch((err) => next(err));
-}
-
-function update(req, res, next) {
-  userService
-    .update(req.params.id, req.body)
-    .then(() => res.json({}))
     .catch((err) => next(err));
 }
 

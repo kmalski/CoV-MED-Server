@@ -5,17 +5,17 @@ const clinicService = require('./clinic.service');
 
 router.get('/', getAll);
 router.get('/cities', getCities);
-router.get('/city/streets', getStreets);
-router.get('/city/street/services', getServices);
-router.get('/city/street/service/doctors', getDoctors);
-router.get('/city/street/service/doctor/not-available-hours', getNotAvailableHours);
+router.get('/:city/streets', getStreets);
+router.get('/:city/:street/services', getServices);
+router.get('/:city/:street/:service/doctors', getDoctors);
+router.get('/:city/:street/:doctor/not-available-hours', getNotAvailableHours);
 router.get('/:id', getById);
 
 router.post('/', jwt.authorize(['Receptionist']), create);
 router.post('/city/street/service', jwt.authorize(['Receptionist']), addService);
 router.post('/city/street/service/doctor', jwt.authorize(['Receptionist']), addDoctor);
 
-router.delete('/city/street', jwt.authorize(['Receptionist']), deleteByCityStreet)
+router.delete('/city/street', jwt.authorize(['Receptionist']), deleteByCityStreet);
 
 module.exports = router;
 
@@ -42,21 +42,21 @@ function getCities(req, res, next) {
 
 function getStreets(req, res, next) {
   clinicService
-    .getStreets(req.body.city)
+    .getStreets(req.params)
     .then((streets) => res.json(streets))
     .catch((err) => next(err));
 }
 
 function getServices(req, res, next) {
   clinicService
-    .getServices(req.body)
+    .getServices(req.params)
     .then((services) => res.json(services))
     .catch((err) => next(err));
 }
 
 function getDoctors(req, res, next) {
   clinicService
-    .getDoctors(req.body)
+    .getDoctors(req.params)
     .then((doctors) => res.json(doctors))
     .catch((err) => next(err));
 }
@@ -91,7 +91,7 @@ function deleteByCityStreet(req, res, next) {
 
 function getNotAvailableHours(req, res, next) {
   clinicService
-    .getNotAvailableHours(req.body)
+    .getNotAvailableHours(req.params, req.query.date)
     .then((hours) => res.json(hours))
     .catch((err) => next(err));
 }

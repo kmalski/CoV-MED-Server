@@ -29,7 +29,7 @@ function makeVisit(req, res, next) {
 
 function getVisits(req, res, next) {
   clientService
-    .getVisits(req.body, req.user.sub)
+    .getVisits(req.query, req.user.sub)
     .then((visits) => res.json(visits))
     .catch((err) => next(err));
 }

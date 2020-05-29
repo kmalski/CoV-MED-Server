@@ -35,13 +35,14 @@ async function makeVisit(param, clientId) {
 }
 
 async function getVisits(param, clientId) {
-  const client = await Client.findById(clientId).populate('visits.doctor', '-hash -createdDate').select('-visits.clinic');
+  const client = await Client.findById(clientId)
+    .populate('visits.doctor', '-hash -createdDate')
+    .select('-visits.clinic');
   const toDate = new Date(param.toDate);
 
   visits = client.visits.filter((visit) => {
     return visit.date < toDate;
   });
-  console.log(visits);
   return visits;
 }
 

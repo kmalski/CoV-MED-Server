@@ -30,26 +30,38 @@ async function getCities() {
   return await Clinic.distinct('city');
 }
 
-async function getStreets(city) {
-  return await Clinic.find({ city: city }).distinct('street');
+async function getStreets(param) {
+  return await Clinic.find({ city: param.city }).distinct('street');
 }
 
-async function getServices(clinicParam) {
-  const clinic = await Clinic.findOne({ city: clinicParam.city, street: clinicParam.street }).select('medicalServices');
+async function getServices(param) {
+  const clinic = await Clinic.findOne({ city: param.city, street: param.street }).select('medicalServices');
 
-  return clinic.medicalServices;
+  const services = clinic.medicalServices.map((service) => {
+    return service.name;
+  });
+
+  return services;
 }
 
-async function getDoctors(clinicParam) {
+async function getDoctors(param) {
   const clinic = await Clinic.findOne({
-    city: clinicParam.city,
-    street: clinicParam.street,
-    'medicalServices.name': clinicParam.service,
-  })
-    .select('medicalServices.doctors')
-    .populate('medicalServices.doctors');
+    city: param.city,
+    street: param.street,
+    'medicalServices.name': param.service,
+  }).populate('medicalServices.doctors', 'firstName lastName email');
 
-  return clinic.medicalServices[0].doctors;
+  const service = clinic.medicalServices.find((service) => {
+    return service.name == param.service;
+  });
+
+  const doctors = service.doctors.map(({ firstName, lastName, email }) => ({
+    firstName,
+    lastName,
+    email,
+  }));
+
+  return doctors;
 }
 
 async function create(clinicParam) {
@@ -79,7 +91,7 @@ async function addDoctor(param) {
   });
   if (!medicalService) throw 'Medical service not found in this Clinic';
 
-  const doctor = await Doctor.findOne({ email: param.email });
+  const doctor = await Doctor.findOne({ email: param.doctor.email });
   medicalService.doctors.push(doctor._id);
 
   await clinic.save();
@@ -93,15 +105,15 @@ async function deleteByCityStreet(param) {
   await Clinic.findOneAndRemove({ city: param.city, street: param.street });
 }
 
-async function getNotAvailableHours(param) {
-  const doctor = await Doctor.findOne({ email: param.doctor.email });
-  const clinic = await Clinic.findOne({ city: param.clinic.city, street: param.clinic.street });
+async function getNotAvailableHours(param, date) {
+  const doctor = await Doctor.findOne({ email: param.doctor });
+  const clinic = await Clinic.findOne({ city: param.city, street: param.street });
   const clients = await Client.find({ 'visits.doctor': doctor._id, 'visits.clinic': clinic._id }).select('visits');
 
   const dates = clients
     .map((client) => {
       return client.visits.filter((visit) => {
-        return visit.date.toDateString() == new Date(param.date).toDateString();
+        return visit.date.toDateString() == new Date(date).toDateString();
       });
     })
     .flat()

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const arrayUniquePlugin = require('mongoose-unique-array');
 
 const medicalServiceSchema = new Schema({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   doctors: [{ type: Schema.Types.ObjectId, ref: 'Doctor', unique: true }],
 });
 
