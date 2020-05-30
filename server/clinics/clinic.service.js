@@ -64,6 +64,23 @@ async function getDoctors(param) {
   return doctors;
 }
 
+async function getNotAvailableHours(param, date) {
+  const doctor = await Doctor.findOne({ email: param.doctor });
+  const clinic = await Clinic.findOne({ city: param.city, street: param.street });
+  const clients = await Client.find({ 'visits.doctor': doctor._id, 'visits.clinic': clinic._id }).select('visits');
+
+  const dates = clients
+    .map((client) => {
+      return client.visits.filter((visit) => {
+        return visit.date.toDateString() == new Date(date).toDateString();
+      });
+    })
+    .flat()
+    .map((visit) => visit.date.toISOString());
+
+  return dates;
+}
+
 async function create(clinicParam) {
   if (await Clinic.findOne({ city: clinicParam.city, street: clinicParam.street })) {
     throw 'Clinic in ' + clinicParam.city + ' at ' + clinicParam.street + ' already exsists';
@@ -103,21 +120,4 @@ async function deleteByCityStreet(param) {
   if (!clinic) throw 'Clinic does not exist';
 
   await Clinic.findOneAndRemove({ city: param.city, street: param.street });
-}
-
-async function getNotAvailableHours(param, date) {
-  const doctor = await Doctor.findOne({ email: param.doctor });
-  const clinic = await Clinic.findOne({ city: param.city, street: param.street });
-  const clients = await Client.find({ 'visits.doctor': doctor._id, 'visits.clinic': clinic._id }).select('visits');
-
-  const dates = clients
-    .map((client) => {
-      return client.visits.filter((visit) => {
-        return visit.date.toDateString() == new Date(date).toDateString();
-      });
-    })
-    .flat()
-    .map((visit) => visit.date.toTimeString());
-
-  return dates;
 }

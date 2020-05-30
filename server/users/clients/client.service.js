@@ -38,11 +38,17 @@ async function getVisits(param, clientId) {
   const client = await Client.findById(clientId)
     .populate('visits.doctor', '-hash -createdDate')
     .select('-visits.clinic');
+
+  if (!param.toDate) {
+    return client.visits;
+  }
+
   const toDate = new Date(param.toDate);
 
   visits = client.visits.filter((visit) => {
     return visit.date < toDate;
   });
+
   return visits;
 }
 
