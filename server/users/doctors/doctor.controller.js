@@ -7,6 +7,7 @@ router.get('/visits', getVisits);
 router.get('/clients', getClients);
 
 router.post('/register', register);
+router.post('/add-examination', addExamination);
 
 module.exports = router;
 
@@ -14,6 +15,13 @@ function register(req, res, next) {
   doctorService
     .create(req.body)
     .then((user) => (user ? res.json(user) : res.status(400).json({ message: 'Could not register new user' })))
+    .catch((err) => next(err));
+}
+
+function addExamination(req, res, next) {
+  doctorService
+    .addExamination(req.body, req.user.sub)
+    .then(() => res.json())
     .catch((err) => next(err));
 }
 

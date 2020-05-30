@@ -3,6 +3,7 @@ const { Doctor, User, Client } = require('../../_helpers/db');
 
 module.exports = {
   create,
+  addExamination,
   getAll,
   getVisits,
   getClients,
@@ -22,6 +23,13 @@ async function create(userParam) {
   await doctor.save();
 
   return await User.findOne({ email: userParam.email }).select('-hash');
+}
+
+async function addExamination(param, doctorId) {
+  const client = await Client.findOne({ email: param.client.email });
+
+  client.examinations.push({ name: param.name, result: param.result, doctor: doctorId });
+  await client.save();
 }
 
 async function getAll() {
@@ -56,7 +64,8 @@ async function getVisits(param, doctorId) {
 async function getClients(doctorId) {
   const clients = await Client.find({ 'visits.doctor': doctorId })
     .populate('visits.doctor', '-hash -createdDate')
-    .select('-visits.clinic');
+    .populate('examinations.doctor', '-hash -createdDate')
+    .select('-visits.clinic -hash -createdDate');
 
   return clients;
 }

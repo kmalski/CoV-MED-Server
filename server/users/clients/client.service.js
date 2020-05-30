@@ -5,6 +5,7 @@ module.exports = {
   create,
   makeVisit,
   getVisits,
+  getExaminations,
   activate,
   deactivate,
 };
@@ -50,6 +51,14 @@ async function getVisits(param, clientId) {
   });
 
   return visits;
+}
+
+async function getExaminations(clientId) {
+  const client = await Client.findById(clientId)
+    .populate('examinations.doctor', 'firstName lastName email')
+    .select('examinations');
+
+  return client.examinations;
 }
 
 async function activate(email) {

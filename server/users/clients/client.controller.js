@@ -7,6 +7,7 @@ router.post('/register', register);
 router.post('/make-visit', makeVisit);
 
 router.get('/visits', getVisits);
+router.get('/examinations', getExaminations);
 
 router.put('/activate/:email', jwt.authorize(['Receptionist']), activate);
 router.put('/deactivate/:email', jwt.authorize(['Receptionist']), deactivate);
@@ -31,6 +32,13 @@ function getVisits(req, res, next) {
   clientService
     .getVisits(req.query, req.user.sub)
     .then((visits) => res.json(visits))
+    .catch((err) => next(err));
+}
+
+function getExaminations(req, res, next) {
+  clientService
+    .getExaminations(req.user.sub)
+    .then((examinations) => res.json(examinations))
     .catch((err) => next(err));
 }
 
