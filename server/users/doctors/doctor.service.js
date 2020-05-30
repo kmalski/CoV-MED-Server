@@ -5,6 +5,7 @@ module.exports = {
   create,
   getAll,
   getVisits,
+  getClients,
 };
 
 async function create(userParam) {
@@ -33,11 +34,11 @@ async function getVisits(param, doctorId) {
     .select('-visits.clinic');
 
   let visits = clients
-  .map((client) => client.visits)
-  .flat()
-  .filter((visit) => {
-    return visit.doctor._id == doctorId;
-  });
+    .map((client) => client.visits)
+    .flat()
+    .filter((visit) => {
+      return visit.doctor._id == doctorId;
+    });
 
   if (!param.toDate) {
     return visits;
@@ -50,4 +51,12 @@ async function getVisits(param, doctorId) {
   });
 
   return visits;
+}
+
+async function getClients(doctorId) {
+  const clients = await Client.find({ 'visits.doctor': doctorId })
+    .populate('visits.doctor', '-hash -createdDate')
+    .select('-visits.clinic');
+
+  return clients;
 }

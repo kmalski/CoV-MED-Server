@@ -4,6 +4,7 @@ const doctorService = require('./doctor.service');
 
 router.get('/', getAll);
 router.get('/visits', getVisits);
+router.get('/clients', getClients);
 
 router.post('/register', register);
 
@@ -26,6 +27,13 @@ function getAll(req, res, next) {
 function getVisits(req, res, next) {
   doctorService
     .getVisits(req.query, req.user.sub)
+    .then((visits) => res.json(visits))
+    .catch((err) => next(err));
+}
+
+function getClients(req, res, next) {
+  doctorService
+    .getClients(req.user.sub)
     .then((visits) => res.json(visits))
     .catch((err) => next(err));
 }
