@@ -4,6 +4,8 @@ const { Doctor, User, Client } = require('../../_helpers/db');
 module.exports = {
   create,
   addExamination,
+  addRefferal,
+  addPrescription,
   getAll,
   getVisits,
   getClients,
@@ -32,33 +34,50 @@ async function addExamination(param, doctorId) {
   await client.save();
 }
 
+async function addRefferal(param, doctorId) {
+  const client = await Client.findOne({ 'visits.doctor': doctorId, 'visits.date': param.visit.date });
+
+  if (!client) throw 'This client does not exists';
+
+  const visit = client.visits.find((visit) => visit.doctor == doctorId && visit.date.toISOString() == param.visit.date);
+  visit.refferal = param.refferal;
+  await client.save();
+}
+
+async function addPrescription(param, doctorId) {
+  const client = await Client.findOne({ 'visits.doctor': doctorId, 'visits.date': param.visit.date });
+
+  if (!client) throw 'This client does not exists';
+
+  const visit = client.visits.find((visit) => visit.doctor == doctorId && visit.date.toISOString() == param.visit.date);
+  visit.prescription = param.prescription;
+  await client.save();
+}
+
 async function getAll() {
   return await Doctor.find().select('-hash');
 }
 
 async function getVisits(param, doctorId) {
-  const clients = await Client.find({ 'visits.doctor': doctorId })
-    .populate('visits.doctor', '-hash -createdDate')
-    .select('-visits.clinic');
+  const clients = await Client.find({ 'visits.doctor': doctorId }).select(
+    '-visits.clinic -createdDate -hash -examinations'
+  );
 
-  let visits = clients
-    .map((client) => client.visits)
-    .flat()
-    .filter((visit) => {
-      return visit.doctor._id == doctorId;
-    });
+  for (const client of clients) {
+    client.visits = client.visits.filter((visit) => visit.doctor == doctorId);
+  }
 
   if (!param.toDate) {
-    return visits;
+    return clients;
   }
 
   const toDate = new Date(param.toDate);
 
-  visits = visits.filter((visit) => {
-    return visit.date < toDate;
-  });
+  for (const client of clients) {
+    client.visits = client.visits.filter((visit) => visit.date < toDate);
+  }
 
-  return visits;
+  return clients;
 }
 
 async function getClients(doctorId) {

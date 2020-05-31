@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const medicineSchema = new Schema({
   name: { type: String, required: true },
-  size: { type: Number, required: true },
+  size: { type: String, required: true },
 });
 
 const prescriptionSchema = new Schema({

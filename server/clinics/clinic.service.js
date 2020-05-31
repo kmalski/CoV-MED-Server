@@ -91,6 +91,9 @@ async function create(clinicParam) {
 }
 
 async function addService(param) {
+  if (await Clinic.findOne({ city: param.city, street: param.street, 'medicalServices.name': param.service }))
+    throw 'This clinic already has this service';
+
   const clinic = await Clinic.findOne({ city: param.city, street: param.street });
 
   if (!clinic) throw 'Clinic not found';

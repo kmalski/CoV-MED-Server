@@ -28,8 +28,15 @@ async function create(userParam) {
 
 async function makeVisit(param, clientId) {
   const doctorId = await Doctor.findOne({ email: param.doctor.email }).select('id');
+
+  if (await Client.findOne({ 'visits.date': param.date, 'visits.doctor': doctorId }))
+    throw 'Doctor already has a visit at this time';
+
   const clinicId = await Clinic.findOne({ city: param.clinic.city, street: param.clinic.street }).select('id');
   const client = await Client.findById(clientId);
+
+  if (client.visits.find((visit) => visit.date.toISOString() == param.date))
+    throw 'Client already has a visit at this time';
 
   client.visits.push({ date: param.date, doctor: doctorId, clinic: clinicId });
   await client.save();
