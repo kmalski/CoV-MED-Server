@@ -67,14 +67,14 @@ async function getVisits(param, doctorId) {
     client.visits = client.visits.filter((visit) => visit.doctor == doctorId);
   }
 
-  if (!param.toDate) {
+  if (!param.fromDate) {
     return clients;
   }
 
-  const toDate = new Date(param.toDate);
+  const fromDate = new Date(param.fromDate);
 
   for (const client of clients) {
-    client.visits = client.visits.filter((visit) => visit.date < toDate);
+    client.visits = client.visits.filter((visit) => visit.date >= fromDate);
   }
 
   return clients;
