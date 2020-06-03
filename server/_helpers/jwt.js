@@ -1,7 +1,7 @@
 const expressJwt = require('express-jwt');
 const jwtAuthz = require('express-jwt-authz');
 const userService = require('../users/user.service');
-const secret = process.env.JWT_KEY
+const secret = process.env.JWT_KEY;
 
 module.exports = {
   authenticate,
@@ -16,11 +16,14 @@ function authenticate() {
       '/clients/register',
       '/doctors/register',
       '/receptionists/register',
-      '/doctors'
+      '/doctors',
+      '/clinics',
+      '/',
+      '/404.png',
     ],
   });
 }
 
 function authorize(userTypes) {
-  return jwtAuthz(userTypes, {customScopeKey: 'userType'})
+  return jwtAuthz(userTypes, { customScopeKey: 'userType' });
 }

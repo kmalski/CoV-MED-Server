@@ -17,7 +17,6 @@ app.use('/users', require('./users/user.controller'));
 app.use('/clients', require('./users/clients/client.controller'));
 app.use('/doctors', require('./users/doctors/doctor.controller'));
 app.use('/receptionists', require('./users/receptionists/receptionist.controller'));
-
 app.use('/clinics', require('./clinics/clinic.controller'));
 
 app.use(errorHandler);

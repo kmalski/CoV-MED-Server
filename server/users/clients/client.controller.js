@@ -6,6 +6,7 @@ const clientService = require('./client.service');
 router.post('/register', register);
 router.post('/make-visit', jwt.authorize(['Client']), makeVisit);
 
+router.get('/', jwt.authorize(['Receptionist']), getAll);
 router.get('/visits', jwt.authorize(['Client']), getVisits);
 router.get('/examinations', jwt.authorize(['Client']), getExaminations);
 router.get('/status', jwt.authorize(['Client']), getStatus);
@@ -26,6 +27,13 @@ function makeVisit(req, res, next) {
   clientService
     .makeVisit(req.body, req.user.sub)
     .then(() => res.json())
+    .catch((err) => next(err));
+}
+
+function getAll(req, res, next) {
+  clientService
+    .getAll()
+    .then((clients) => res.json(clients))
     .catch((err) => next(err));
 }
 

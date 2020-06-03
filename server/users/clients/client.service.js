@@ -4,6 +4,7 @@ const { Client, Doctor, Clinic, User } = require('../../_helpers/db');
 module.exports = {
   create,
   makeVisit,
+  getAll,
   getVisits,
   getExaminations,
   getStatus,
@@ -41,6 +42,10 @@ async function makeVisit(param, clientId) {
 
   client.visits.push({ date: param.date, doctor: doctorId, clinic: clinicId });
   await client.save();
+}
+
+async function getAll() {
+  return await Client.find().select('-hash -visits -examinations'); 
 }
 
 async function getVisits(param, clientId) {
