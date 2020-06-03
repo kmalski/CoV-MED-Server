@@ -4,10 +4,11 @@ const jwt = require('../../_helpers/jwt');
 const clientService = require('./client.service');
 
 router.post('/register', register);
-router.post('/make-visit', makeVisit);
+router.post('/make-visit', jwt.authorize(['Client']), makeVisit);
 
-router.get('/visits', getVisits);
-router.get('/examinations', getExaminations);
+router.get('/visits', jwt.authorize(['Client']), getVisits);
+router.get('/examinations', jwt.authorize(['Client']), getExaminations);
+router.get('/status', jwt.authorize(['Client']), getStatus);
 
 router.put('/activate/:email', jwt.authorize(['Receptionist']), activate);
 router.put('/deactivate/:email', jwt.authorize(['Receptionist']), deactivate);
@@ -39,6 +40,13 @@ function getExaminations(req, res, next) {
   clientService
     .getExaminations(req.user.sub)
     .then((examinations) => res.json(examinations))
+    .catch((err) => next(err));
+}
+
+function getStatus(req, res, next) {
+  clientService
+    .getStatus(req.user.sub)
+    .then((status) => res.json(status))
     .catch((err) => next(err));
 }
 

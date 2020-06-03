@@ -4,8 +4,8 @@ const jwt = require('../_helpers/jwt');
 const userService = require('./user.service');
 
 router.get('/', jwt.authorize(['Receptionist']), getAll);
-router.get('/:id', getById);
-router.get('/current', getCurrent);
+router.get('/:id', jwt.authorize(['Receptionist']), getById);
+router.get('/current', jwt.authorize(['Receptionist', 'Client', 'Doctor']), getCurrent);
 
 router.post('/authenticate', authenticate);
 

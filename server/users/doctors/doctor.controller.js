@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const doctorService = require('./doctor.service');
+const jwt = require('../../_helpers/jwt');
 
 router.get('/', getAll);
-router.get('/visits', getVisits);
-router.get('/clients', getClients);
+router.get('/visits', jwt.authorize(['Doctor']), getVisits);
+router.get('/clients', jwt.authorize(['Doctor']), getClients);
 
 router.post('/register', register);
-router.post('/add-examination', addExamination);
-router.post('/add-refferal', addRefferal);
-router.post('/add-prescription', addPrescription);
+router.post('/add-examination', jwt.authorize(['Doctor']), addExamination);
+router.post('/add-refferal', jwt.authorize(['Doctor']), addRefferal);
+router.post('/add-prescription', jwt.authorize(['Doctor']), addPrescription);
 
 module.exports = router;
 

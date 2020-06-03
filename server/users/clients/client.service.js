@@ -6,6 +6,7 @@ module.exports = {
   makeVisit,
   getVisits,
   getExaminations,
+  getStatus,
   activate,
   deactivate,
 };
@@ -66,6 +67,14 @@ async function getExaminations(clientId) {
     .select('examinations');
 
   return client.examinations;
+}
+
+async function getStatus(clientId) {
+  const client = await Client.findById(clientId);
+
+  if (!client) throw 'User not found';
+
+  return { active: client.active };
 }
 
 async function activate(email) {
