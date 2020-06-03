@@ -8,8 +8,6 @@ module.exports = {
   getVisits,
   getExaminations,
   getStatus,
-  activate,
-  deactivate,
 };
 
 async function create(userParam) {
@@ -80,22 +78,4 @@ async function getStatus(clientId) {
   if (!client) throw 'User not found';
 
   return { active: client.active };
-}
-
-async function activate(email) {
-  const client = await Client.findOne({ email: email });
-
-  if (!client) throw 'User not found';
-
-  client.active = true;
-  client.save();
-}
-
-async function deactivate(email) {
-  const client = await Client.findOne({ email: email });
-
-  if (!client) throw 'User not found';
-
-  client.active = false;
-  client.save();
 }

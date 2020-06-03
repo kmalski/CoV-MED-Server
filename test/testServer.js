@@ -76,21 +76,16 @@ describe('Testing Cov-Med API', () => {
     });
   });
 
-  describe('POST /users/:id', () => {
-    it('(Client) It should find the user by id ', (done) => {
+  describe('GET /users/:id', () => {
+    it('(Client) It should not let to find the user by id', (done) => {
       chai
         .request(server)
         .get('/users/' + id)
         .set('Authorization', 'bearer ' + token)
         .send({ email: clientUser.email, password: clientUser.password })
         .end((err, response) => {
-          response.status.should.eq(200);
-          response.body.should.have.property('email').eq(clientUser.email);
-          response.body.should.not.have.property('password');
-          response.body.should.have.property('userType').eq('Client');
-          response.body.should.have.property('firstName').eq(clientUser.firstName);
-          response.body.should.have.property('lastName').eq(clientUser.lastName);
-          response.body.should.have.property('id').and.to.be.a('string').and.to.be.eq(id);
+          response.status.should.eq(403);
+          response.text.should.be.eq('Insufficient scope');
           done();
         });
     });
@@ -162,21 +157,16 @@ describe('Testing Cov-Med API', () => {
     });
   });
 
-  describe('POST /users/:id', () => {
-    it('(Doctor) It should find the user by id ', (done) => {
+  describe('GET /users/:id', () => {
+    it('(Doctor) It should not let to find the user by id ', (done) => {
       chai
         .request(server)
         .get('/users/' + id)
         .set('Authorization', 'bearer ' + token)
         .send({ email: doctorUser.email, password: doctorUser.password })
         .end((err, response) => {
-          response.status.should.eq(200);
-          response.body.should.have.property('email').eq(doctorUser.email);
-          response.body.should.not.have.property('password');
-          response.body.should.have.property('userType').eq('Doctor');
-          response.body.should.have.property('firstName').eq(doctorUser.firstName);
-          response.body.should.have.property('lastName').eq(doctorUser.lastName);
-          response.body.should.have.property('id').and.to.be.a('string').and.to.be.eq(id);
+          response.status.should.eq(403);
+          response.text.should.be.eq('Insufficient scope');
           done();
         });
     });
@@ -248,7 +238,7 @@ describe('Testing Cov-Med API', () => {
     });
   });
 
-  describe('POST /users/:id', () => {
+  describe('GET /users/:id', () => {
     it('(Receptionist) It should find the user by id ', (done) => {
       chai
         .request(server)

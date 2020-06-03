@@ -11,9 +11,6 @@ router.get('/visits', jwt.authorize(['Client']), getVisits);
 router.get('/examinations', jwt.authorize(['Client']), getExaminations);
 router.get('/status', jwt.authorize(['Client']), getStatus);
 
-router.put('/activate/:email', jwt.authorize(['Receptionist']), activate);
-router.put('/deactivate/:email', jwt.authorize(['Receptionist']), deactivate);
-
 module.exports = router;
 
 function register(req, res, next) {
@@ -55,19 +52,5 @@ function getStatus(req, res, next) {
   clientService
     .getStatus(req.user.sub)
     .then((status) => res.json(status))
-    .catch((err) => next(err));
-}
-
-function activate(req, res, next) {
-  clientService
-    .activate(req.params.email)
-    .then(() => res.json())
-    .catch((err) => next(err));
-}
-
-function deactivate(req, res, next) {
-  clientService
-    .deactivate(req.params.email)
-    .then(() => res.json())
     .catch((err) => next(err));
 }
