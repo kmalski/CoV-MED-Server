@@ -40,12 +40,12 @@ async function makeVisit(param, clientId) {
   if (client.visits.find((visit) => visit.date.toISOString() == param.date))
     throw 'Client already has a visit at this time';
 
-  client.visits.push({ date: param.date, doctor: doctorId, clinic: clinicId });
+  client.visits.push({ date: param.date, service: param.service, doctor: doctorId, clinic: clinicId });
   await client.save();
 }
 
 async function getAll() {
-  return await Client.find().select('-hash -visits -examinations'); 
+  return await Client.find().select('-hash -visits -examinations');
 }
 
 async function getVisits(param, clientId) {

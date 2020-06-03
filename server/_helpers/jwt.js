@@ -17,7 +17,6 @@ function authenticate() {
       '/doctors/register',
       '/receptionists/register',
       '/doctors',
-      '/clinics',
       '/',
       '/404.png',
     ],

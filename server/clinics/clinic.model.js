@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const medicalServiceSchema = new Schema({
   name: { type: String, required: true },
-  doctors: [{ type: Schema.Types.ObjectId, ref: 'Doctor', unique: true }],
+  doctors: [{ type: Schema.Types.ObjectId, ref: 'Doctor' }],
 });
 
 const clinicSchema = new Schema({

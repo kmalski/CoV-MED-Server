@@ -1,10 +1,9 @@
 const bcrypt = require('bcryptjs');
-const db = require('../../_helpers/db');
-const Receptionist = db.Receptionist;
-const User = db.User;
+const { User, Receptionist, Client } = require('../../_helpers/db');
 
 module.exports = {
   create,
+  getVisits,
 };
 
 async function create(userParam) {
@@ -21,4 +20,25 @@ async function create(userParam) {
   await receptionist.save();
 
   return await User.findOne({ email: userParam.email }).select('-hash');
+}
+
+async function getVisits(param) {
+  const clients = await Client.find({ active: true })
+    .where('visits')
+    .ne([])
+    .populate('visits.clinic', 'city street')
+    .populate('visits.doctor', 'firstName lastName email')
+    .select('-createdDate -hash -examinations -visits.prescription -visits.refferal');
+
+  if (!param.fromDate) {
+    return clients;
+  }
+
+  const fromDate = new Date(param.fromDate);
+
+  for (const client of clients) {
+    client.visits = client.visits.filter((visit) => visit.date >= fromDate);
+  }
+
+  return clients;
 }

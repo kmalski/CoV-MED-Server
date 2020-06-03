@@ -19,6 +19,7 @@ const refferalSchema = new Schema({
 
 const visitSchema = new Schema({
   date: { type: Date, required: true },
+  service: { type: String, required: true},
   doctor: { type: Schema.Types.ObjectId, ref: 'Doctor', required: true },
   clinic: { type: Schema.Types.ObjectId, ref: 'Clinic', required: true },
   prescription: { type: prescriptionSchema, required: false },
